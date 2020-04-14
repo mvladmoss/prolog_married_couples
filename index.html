@@ -7,11 +7,28 @@
   <meta name="Generator" content="Cocoa HTML Writer">
   <meta name="CocoaVersion" content="1671.6">
   <style type="text/css">
-    p.p1 {margin: 0.0px 0.0px 0.0px 0.0px; line-height: 14.0px; font: 12.0px Times; color: #000000; -webkit-text-stroke: #000000}
-    span.s1 {font-kerning: none}
+    p.p1 {margin: 0.0px 0.0px 12.0px 0.0px; line-height: 22.0px; font: 12.7px 'Times New Roman'; color: #000000; -webkit-text-stroke: #000000; background-color: #ffffff}
+    p.p2 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.7px 'Times New Roman'; color: #000000; -webkit-text-stroke: #000000; background-color: #ffffff}
+    p.p3 {margin: 0.0px 0.0px 12.0px 0.0px; font: 12.7px 'Times New Roman'; color: #000000; -webkit-text-stroke: #000000; background-color: #ffffff; min-height: 15.0px}
+    span.s1 {font: 12.7px Times; font-kerning: none}
+    span.s2 {font-kerning: none}
+    span.Apple-tab-span {white-space:pre}
   </style>
 </head>
 <body>
-<p class="p1"><span class="s1">Prolog program</span></p>
+<p class="p1"><span class="s1"><b>Условие задачи: </b></span><span class="s2">Два берега реки. На одном из берегов есть три семейные пары, требуется с помощью лодки, вмещающий не более двух человек, переправить всех на другой берег. Нельзя оставлять чужую жену и чужого мужа вместе без супругов.<span class="Apple-converted-space"> </span></span></p>
+<p class="p1"><span class="s2"><b>Реализация</b></span><span class="s1"><b>:<span class="Apple-converted-space"> </span></b></span></p>
+<p class="p1"><span class="s1"><b><span class="Apple-tab-span">	</span></b></span><span class="s2">Для решения задачи использовался SWI-Prolog 7.4.2.<span class="Apple-converted-space">  </span>Структура следующая [Boat, [Husband1, Wife1], [Husband2, Wife2], [Husband3, Wife3]]. Каждая из переменных может принимать значения 0 и 1, 0 означает левый берег, а 1 соответственно правый. Тогда для решения задачи необходимо перейти из состояния START = [0,[0,0],[0,0],[0,0]] в состояние GOAL = [1,[1,1],[1,1],[1,1]].</span></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>move2</b>([[H,W]|T],[[H1,W1]|T],B) :- H=B, W=B, H1 is 1-H, W1 is 1-W. позволяет перевести одну пару на другой берег.</span></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>move2</b>([X|T1],[X|T2],B) :- move2(T1,T2,B).<span class="Apple-converted-space">  </span>позволяет перейти к следующей паре.</span></p>
+<p class="p1"><span class="s2"><span class="Apple-tab-span">	</span>Предикаты <b>move1</b>([[H,W]|T],[[H1,W]|T],B,1) и <b>move1</b>([[H,W]|T],[[H1,W]|T],B,2) позволяют соответственно перевезти в лодке одного мужчину или одну женщину.</span></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>move1</b>([X|T1],[X|T2],B,Gender) :- move1(T1,T2,B,Gender). позволяет перейти к следующему человеку.</span></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>failcondition</b>([[X,Y]|T],Z,H,W) позволяет выяснить, что чужой муж находится с чужой женой на одном берегу без супруга.</span></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>go</b>([BX|X],[BY|Y]) :- move(X,Y,BX), condition(Y), BY is 1-BX пытается получить из состояния X состояние Y, при этом переплыв с берега BX<span class="Apple-converted-space">  </span>на берег BY. Сначала, с помощью предиката move ищется один из возможных вариантов перевозки, затем с помощью предиката condition осуществляется проверка корректности данной перевозки(condition :- not(failcondtiion([X,Y]|T],Z,H,W))) .Если данная перевозка корректна, меняем берег.</span></p>
+<p class="p3"><span class="s2"></span><br></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>s1</b>(S,E,R,P) :- go(S,X), not(member(X,R)), s1(X,E,[X|R],P) запускает поиск. Предикат go позволяет найти корректную перевозку, то есть переход в корректное состояние. Затем смотрится, что данный переход еще не осуществлялся и затем рекурсивно вызываем снова s1().</span></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>s1</b>(E,E,R,R).<span class="Apple-converted-space">  </span>конечное условие поиска, когда начальное и конечное состояния совпадают.</span></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>output</b>([A,B|MovesList]) позволяет красиво отобразить переходы программы.</span></p>
+<p class="p2"><span class="s2"><span class="Apple-tab-span">	</span>Предикат <b>exeс</b>() запускает программу.</span></p>
 </body>
 </html>
